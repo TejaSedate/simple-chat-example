@@ -65,10 +65,23 @@
   <script>
     var socket = io();
     $('form').submit(function() {
-      socket.emit('chat message', $('#m').val());
+      var msg = $('#m').val()
+      socket.emit('chat message', msg);
       $('#m').val('');
+      updateMessage(msg);
       return false;
     });
+    socket.on('broadcast message', function(obj) {
+      var str = obj.id + ' says ' + obj.msg;
+      updateMessage(str);
+    });
+
+    function updateMessage(msg) {
+      $('#messages').append($('<li>').text(msg));
+    }
+    socket.on('new user', function(msg) {
+      $('#messages').append($('<li>').text(msg));
+    })
   </script>
 </body>
 
